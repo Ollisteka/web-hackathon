@@ -42,6 +42,9 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
             const newSid = sidGenerator;
             studentStorage.add(new Student(id, name || id.toString()));
             sessionStorage.add(newSid, id);
+            res.cookie("sid", newSid);
+            res.sendStatus(200);
+            return;
         }
 
         res.sendStatus(401)
