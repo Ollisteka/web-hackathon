@@ -66,9 +66,9 @@ module.exports = (app, storages, studentIdGenerator, sidGenerator) => {
         res.redirect('/question');
     });
 
-    // app.get('/question', (req, res) => {
-    //     res.sendFile(path.join(rootDir, '../views/question.html'));
-    // });
+    app.get('/question', (req, res) => {
+        res.sendFile(path.join(rootDir, '../views/question.html'));
+    });
     app.get('/survey/:id', (req, res) =>
     {
         const {id} = req.params;

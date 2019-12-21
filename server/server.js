@@ -19,6 +19,13 @@ const app = express();
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(function (req, res, next) {
+    if (!req.cookies){
+        res.sendStatus(401);
+        return;
+    }
+    next()
+})
 app.use('/static', express.static('../static'));
 const sessionStorage = new SessionStorage();
 const teachersStorage = new TeacherStorage();
