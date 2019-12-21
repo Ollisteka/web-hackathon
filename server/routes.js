@@ -9,7 +9,7 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
     });
 
     app.get('/login', (req, res) => {
-        res.sendFile(path.join(rootDir, '../views/login.html'));
+        res.sendFile(path.join(process.cwd(), '../views/login.html'));
     });
 
     app.post('/login', (req, res) => {

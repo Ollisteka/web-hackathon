@@ -9,13 +9,14 @@ const TeacherStorage = require("./storages/teachersStorage");
 const Teacher = require("./models/teacher");
 const uuid = require("uuid/v4");
 const app = express();
+const path = require('path');
 
 const port = process.env.PORT || 5000;
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use('/static', express.static('../static'));
+app.use('/static', express.static(path.join(process.cwd(), "../static")));
 const sessionStorage = new SessionStorage();
 const teacherStorage = new TeacherStorage();
 teacherStorage.add("admin", "asdmin", new Teacher("admin"));
