@@ -15,4 +15,4 @@ module.exports = class SessionStorage {
     add(sid, user){
         this.map.set(sid, user);
     }
-}
+};

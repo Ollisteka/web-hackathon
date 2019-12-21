@@ -3,7 +3,7 @@ const rootDir = process.cwd();
 const path = require('path');
 
 module.exports = (app, storages, studentIdGenerator, sidGenerator) => {
-    const {surveyStateStorage, sessionStorage, teachersStorage, studentStorage} = storages;
+    const {surveyStateStorage, sessionStorage, teachersStorage, studentStorage, questionsStorage} = storages;
     app.get('/', (req, res) => {
 
         res.sendStatus(200);
@@ -63,12 +63,12 @@ module.exports = (app, storages, studentIdGenerator, sidGenerator) => {
 
     app.post('/createMeeting', (req, res) => {
         // todo проверить куку учителя, save data
-        res.redirect(302, '/question');
+        res.redirect('/question');
     });
 
-    app.get('/question', (req, res) => {
-        res.sendFile(path.join(rootDir, '../views/question.html'));
-    });
+    // app.get('/question', (req, res) => {
+    //     res.sendFile(path.join(rootDir, '../views/question.html'));
+    // });
     app.get('/survey/:id', (req, res) =>
     {
         const {id} = req.params;
@@ -79,15 +79,60 @@ module.exports = (app, storages, studentIdGenerator, sidGenerator) => {
             return;
         }
 
-        res.redirect(`/survey/${id}/question/0`);
+        res.redirect(302, `/survey/${id}/question/0`);
     });
 
     app.get('/survey/:id/question/:index', (req, res) => {
-        const {id, index} = req.params;
+        let {id, index} = req.params;
         const surveyState = surveyStateStorage.get(id);
         if (!surveyState) {
-            res.sendStatus(404);
+            res.sendStatus(404); //redirect????
             return;
         }
-    })
+
+        index = parseInt(index);
+
+        if (surveyState.currentQuestionIndex === surveyState.survey.questions.length){
+            res.redirect("/surveyended");
+            return;
+        }
+
+        if (index !== surveyState.currentQuestionIndex){
+            res.redirect(`/survey/${id}/question/${surveyState.currentQuestionIndex}`);
+            return;
+        }
+
+        res.json(questionsStorage.get(surveyState.questions[index]));
+    });
+
+    app.post('/survey/:id/question/:index', (req, res) =>{
+        const {sid} = req.cookies;
+        const {ids: id, isTeacher} = sessionStorage.get(sid);
+
+        if (isTeacher){
+            res.sendStatus(403);
+            return;
+        }
+
+        const {index} = req.params;
+        let surveyId = req.params.id;
+        const surveyState = surveyStateStorage.get(surveyId);
+        if (!surveyState) {
+            res.sendStatus(404); //redirect????
+            return;
+        }
+
+        if (!surveyState.hasStudentRegistered(id)){
+            res.sendStatus(403);
+            return;
+        }
+
+        if (index !== surveyState.currentQuestionIndex){
+            res.redirect(`/survey/${id}/question/${surveyState.currentQuestionIndex}`);
+            return;
+        }
+
+
+        surveyState.vote(id, index)
+    });
 };

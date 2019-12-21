@@ -21,8 +21,8 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use('/static', express.static('../static'));
 const sessionStorage = new SessionStorage();
-const teacherStorage = new TeacherStorage();
-teacherStorage.add("admin", "asdmin", new Teacher("admin"));
+const teachersStorage = new TeacherStorage();
+teachersStorage.add("admin", "asdmin", new Teacher("admin"));
 const studentStorage = new StudentStorage();
 const question1 = new Question("sup?", ["not much", "damn"], 0);
 const questionsStorage = new QuestionStorage();
@@ -31,11 +31,11 @@ const survey = new Survey("test", ["0"]);
 const surveyStorage = new SurveyStorage();
 surveyStorage.add("0", survey);
 const surveyStateStorage = new SurveyStateStorage();
-// surveyStateStorage.add("0", new SurveyState(survey, "admin"));
+surveyStateStorage.add("0", new SurveyState(survey, "admin"));
 const storages = {
     surveyStateStorage,
     sessionStorage,
-    teacherStorage,
+    teachersStorage,
     studentStorage,
     questionsStorage,
     surveyStorage
