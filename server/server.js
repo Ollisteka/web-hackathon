@@ -22,14 +22,17 @@ const port = process.env.PORT || 5000;
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use('/static', express.static('../static'));
+
 app.use(function (req, res, next) {
-    if (!req.cookies){
-        res.sendStatus(401);
+    const sid = req.cookies.sid;
+    if (!sid && !req.url.includes('login')) {
+        res.redirect('/login');
         return;
     }
-    next()
-})
-app.use('/static', express.static('../static'));
+    next();
+});
+
 const sessionStorage = new SessionStorage();
 const teachersStorage = new TeacherStorage();
 teachersStorage.add("admin", "asdmin", new Teacher("admin"));
