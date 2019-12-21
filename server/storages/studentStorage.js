@@ -3,8 +3,8 @@ module.exports = class StudentStorage {
         this.map = new Map();
     }
 
-    getById(id){
-        return map.get(id);
+    get(id){
+        return this.map.get(id);
     }
 
     add(user){

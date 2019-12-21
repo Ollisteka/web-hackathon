@@ -2,7 +2,8 @@ const Student = require("./models/student");
 const rootDir = process.cwd();
 const path = require('path');
 
-module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentIdGenerator, sidGenerator) => {
+module.exports = (app, storages, studentIdGenerator, sidGenerator) => {
+    const {surveyStateStorage, sessionStorage, teachersStorage, studentStorage, questionsStorage} = storages;
     app.get('/', (req, res) => {
 
         res.sendStatus(200);
@@ -13,8 +14,6 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
     });
 
     app.post('/login', (req, res) => {
-        console.log(req.body);
-
         const body = req.body || {};
 
         const {sid} = req.cookies || {};
@@ -22,6 +21,7 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
             res.sendStatus(409);
             return;
         }
+
         const userType = (body).userType;
         if (userType === "teacher") {
             const {login, password} = body;
@@ -37,8 +37,14 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
         }
 
         if (userType === "student") {
-            const {name} = body;
+            const {name, survey} = body;
             const id = studentIdGenerator();
+            const accessedSurvey = surveyStateStorage.get(survey);
+            if (!accessedSurvey){
+                res.sendStatus(404);
+                return;
+            }
+            accessedSurvey.addStudent(id);
             const newSid = sidGenerator;
             studentStorage.add(new Student(id, name || id.toString()));
             sessionStorage.add(newSid, id);
@@ -57,10 +63,76 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
 
     app.post('/createMeeting', (req, res) => {
         // todo проверить куку учителя, save data
-        res.redirect(302, '/question');
+        res.redirect('/question');
     });
 
     app.get('/question', (req, res) => {
         res.sendFile(path.join(rootDir, '../views/question.html'));
+    });
+    app.get('/survey/:id', (req, res) =>
+    {
+        const {id} = req.params;
+
+        const surveyState = surveyStateStorage.get(id);
+        if (!surveyState) {
+            res.sendStatus(404);
+            return;
+        }
+
+        res.redirect(302, `/survey/${id}/question/0`);
+    });
+
+    app.get('/survey/:id/question/:index', (req, res) => {
+        let {id, index} = req.params;
+        const surveyState = surveyStateStorage.get(id);
+        if (!surveyState) {
+            res.sendStatus(404); //redirect????
+            return;
+        }
+
+        index = parseInt(index);
+
+        if (surveyState.currentQuestionIndex === surveyState.survey.questions.length){
+            res.redirect("/surveyended");
+            return;
+        }
+
+        if (index !== surveyState.currentQuestionIndex){
+            res.redirect(`/survey/${id}/question/${surveyState.currentQuestionIndex}`);
+            return;
+        }
+
+        res.json(questionsStorage.get(surveyState.questions[index]));
+    });
+
+    app.post('/survey/:id/question/:index', (req, res) =>{
+        const {sid} = req.cookies;
+        const {ids: id, isTeacher} = sessionStorage.get(sid);
+
+        if (isTeacher){
+            res.sendStatus(403);
+            return;
+        }
+
+        const {index} = req.params;
+        let surveyId = req.params.id;
+        const surveyState = surveyStateStorage.get(surveyId);
+        if (!surveyState) {
+            res.sendStatus(404); //redirect????
+            return;
+        }
+
+        if (!surveyState.hasStudentRegistered(id)){
+            res.sendStatus(403);
+            return;
+        }
+
+        if (index !== surveyState.currentQuestionIndex){
+            res.redirect(`/survey/${id}/question/${surveyState.currentQuestionIndex}`);
+            return;
+        }
+
+
+        surveyState.vote(id, index)
     });
 };
