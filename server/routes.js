@@ -43,7 +43,7 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
             studentStorage.add(new Student(id, name || id.toString()));
             sessionStorage.add(newSid, id);
             res.cookie("sid", newSid);
-            res.sendStatus(200);
+            res.redirect(302, '/question');
             return;
         }
 
@@ -53,5 +53,14 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
     app.get('/createMeeting', (req, res) => {
         // todo проверить куку учителя
         res.sendFile(path.join(rootDir, '../views/createMeeting.html'));
-    })
+    });
+
+    app.post('/createMeeting', (req, res) => {
+        // todo проверить куку учителя, save data
+        res.redirect(302, '/question');
+    });
+
+    app.get('/question', (req, res) => {
+        res.sendFile(path.join(rootDir, '../views/question.html'));
+    });
 };

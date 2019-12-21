@@ -7,7 +7,7 @@
 </head>
 <body>
 <main>
-    <form class="meeting" action="/createMeeting" method="POST">
+    <form class="meeting">
         <div class="meeting-name">
             <label for="MeetingName">Имя встречи:</label> <input id="MeetingName" type="text" placeholder="Моя первая встреча" disabled>
         </div>
@@ -20,6 +20,35 @@
         <img class="meeting-image" src="https://img1.goodfon.ru/original/4096x2476/f/18/art-minimalizm-smesharik-ezhiu.jpg" alt="Ёжик с мороженым" width="320" height="200">
         <button class="meeting-create">Создать</button>
     </form>
+
+    <script>
+        function send(form, e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const object = {};
+            formData.forEach((value, key) => {
+                object[key] = value
+            });
+            const json = JSON.stringify(object);
+            fetch('/createMeeting', {
+                method: 'POST',
+                body: json,
+                redirect: 'follow',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => {
+                console.log(res);
+                if (res.redirected) {
+                    window.location.href = res.url;
+                }
+            });
+        }
+
+        const meeting = document.querySelector('.meeting');
+        meeting.onsubmit = (e) => send(meeting, e);
+
+    </script>
 </main>
 </body>
 <script>
