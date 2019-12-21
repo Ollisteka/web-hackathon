@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../static/index.css">
+    <title>Логин</title>
+</head>
+<body>
+    <button id="StudentLoginButton" type="button">Я новенький</button>
+    <button id="TeacherLoginButton" type="button">Я уже смешарик</button>
+
+    <form id="StudentLoginForm" method="POST" class="hidden">
+        <label>Имя: <input type="text" name="studentName" placeholder="Копатыч"/></label>
+        <label>ID встречи:<input type="text" name="meetingId" placeholder="830a230e-a0bf-4079-8218-b288d75470ee" pattern="[({]?[a-fA-F0-9]{8}[-]?([a-fA-F0-9]{4}[-]?){3}[a-fA-F0-9]{12}[})]?"/></label>
+        <button>Войти</button>
+    </form>
+
+    <form id="TeacherLoginForm" method="POST" class="hidden">
+        <label>Логин: <input type="text" name="login" placeholder="Нюша"/></label>
+        <label>Пароль: <input type="password" name="password"/></label>
+        <button>Войти</button>
+    </form>
+</body>
+<script>
+    function hideElement(element) {
+        element.classList.add('hidden');
+    }
+
+    const studentLoginButton = document.getElementById('StudentLoginButton');
+    const teacherLoginButton = document.getElementById('TeacherLoginButton');
+
+    const studentLoginForm = document.getElementById('StudentLoginForm');
+    const teacherLoginForm = document.getElementById('TeacherLoginForm');
+
+    studentLoginButton.addEventListener('click', () => {
+        hideElement(teacherLoginButton);
+        hideElement(studentLoginButton);
+        studentLoginForm.classList.remove('hidden');
+    });
+    teacherLoginButton.addEventListener('click', () => {
+        hideElement(teacherLoginButton);
+        hideElement(studentLoginButton);
+        teacherLoginForm.classList.remove('hidden');
+    });
+</script>
+</html>

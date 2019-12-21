@@ -1,0 +1,16 @@
+body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, Tahoma, sans-serif;
+    font-size: 16px;
+}
+
+button {
+    font-size: 18px;
+}
+
+.hidden {
+    display: none;
+}
+
+.inline-block {
+    display: inline-block;
+}
