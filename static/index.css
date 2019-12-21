@@ -4,6 +4,7 @@ body {
 }
 
 button {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, Tahoma, sans-serif;
     font-size: 18px;
 }
 
@@ -13,4 +14,35 @@ button {
 
 .inline-block {
     display: inline-block;
+}
+
+.meeting {
+    display: grid;
+    width: 500px;
+    grid-template-areas:
+            "name  image"
+            "descr image"
+            "subm subm";
+}
+.meeting label {
+    display: block;
+}
+
+.meeting-name {
+    grid-area: name;
+}
+
+.meeting-description {
+    grid-area: descr;
+}
+
+.meeting-image {
+    grid-area: image;
+
+    width: 320px;
+    height: 200px;
+}
+
+.meeting-create {
+    grid-area: subm;
 }

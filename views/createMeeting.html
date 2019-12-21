@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../static/index.css">
+    <title>Создать встречу</title>
+</head>
+<body>
+<main>
+    <form class="meeting" action="/createMeeting" method="POST">
+        <div class="meeting-name">
+            <label for="MeetingName">Имя встречи:</label> <input id="MeetingName" type="text" placeholder="Моя первая встреча" disabled>
+        </div>
+        <div class="meeting-description">
+            <label for="MeetingDescription">Описание:</label>
+            <textarea id="MeetingDescription">
+            Самая лучшая встреча в мире!
+        </textarea>
+        </div>
+        <img class="meeting-image" src="https://img1.goodfon.ru/original/4096x2476/f/18/art-minimalizm-smesharik-ezhiu.jpg" alt="Ёжик с мороженым" width="320" height="200">
+        <button class="meeting-create">Создать</button>
+    </form>
+</main>
+</body>
+<script>
+
+</script>
+</html>
