@@ -6,20 +6,23 @@
     <title>Логин</title>
 </head>
 <body>
-    <button id="StudentLoginButton" type="button">Я новенький</button>
-    <button id="TeacherLoginButton" type="button">Я уже смешарик</button>
+<button id="StudentLoginButton" type="button">Я новенький</button>
+<button id="TeacherLoginButton" type="button">Я уже смешарик</button>
 
-    <form id="StudentLoginForm" method="POST" class="hidden">
-        <label>Имя: <input type="text" name="studentName" placeholder="Копатыч"/></label>
-        <label>ID встречи:<input type="text" name="meetingId" placeholder="830a230e-a0bf-4079-8218-b288d75470ee" pattern="[({]?[a-fA-F0-9]{8}[-]?([a-fA-F0-9]{4}[-]?){3}[a-fA-F0-9]{12}[})]?"/></label>
-        <button>Войти</button>
-    </form>
+<form class="hidden" id="StudentLoginForm">
+    <input name="userType" type="hidden" value="student">
+    <label>Имя: <input name="name" placeholder="Копатыч" type="text"/></label>
+    <label>ID встречи:<input type="text" name="meetingId" placeholder="830a230e-a0bf-4079-8218-b288d75470ee"
+                             pattern="[({]?[a-fA-F0-9]{8}[-]?([a-fA-F0-9]{4}[-]?){3}[a-fA-F0-9]{12}[})]?"/></label>
+    <button>Войти</button>
+</form>
 
-    <form id="TeacherLoginForm" method="POST" class="hidden">
-        <label>Логин: <input type="text" name="login" placeholder="Нюша"/></label>
-        <label>Пароль: <input type="password" name="password"/></label>
-        <button>Войти</button>
-    </form>
+<form class="hidden" id="TeacherLoginForm">
+    <input name="userType" type="hidden" value="teacher">
+    <label>Логин: <input type="text" name="login" placeholder="Нюша"/></label>
+    <label>Пароль: <input type="password" name="password"/></label>
+    <button>Войти</button>
+</form>
 </body>
 <script>
     function hideElement(element) {
@@ -42,5 +45,33 @@
         hideElement(studentLoginButton);
         teacherLoginForm.classList.remove('hidden');
     });
+
+    function send(form, e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const object = {};
+        formData.forEach((value, key) => {
+            object[key] = value
+        });
+        const json = JSON.stringify(object);
+        fetch('/login', {
+            method: 'POST',
+            body: json,
+            redirect: 'follow',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => {
+            console.log(res);
+            if (res.redirected) {
+                window.location.href = res.url;
+            }
+        });
+    }
+
+    studentLoginForm.onsubmit = (e) => send(studentLoginForm, e);
+
+    teacherLoginForm.onsubmit = (e) => send(teacherLoginForm, e);
+
 </script>
 </html>

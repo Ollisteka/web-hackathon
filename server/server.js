@@ -8,13 +8,12 @@ const StudentStorage = require("./storages/studentStorage");
 const TeacherStorage = require("./storages/teachersStorage");
 const Teacher = require("./models/teacher");
 const uuid = require("uuid/v4");
-
 const app = express();
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(cookieParser());
-
+app.use('/static', express.static('../static'));
 const sessionStorage = new SessionStorage();
 const teacherStorage = new TeacherStorage();
 teacherStorage.add("admin", "asdmin", new Teacher("admin"));

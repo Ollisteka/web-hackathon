@@ -1,4 +1,6 @@
 const Student = require("./models/student");
+const rootDir = process.cwd();
+const path = require('path');
 
 module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentIdGenerator, sidGenerator) => {
     app.get('/', (req, res) => {
@@ -6,7 +8,13 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
         res.sendStatus(200);
     });
 
+    app.get('/login', (req, res) => {
+        res.sendFile(path.join(rootDir, '../views/login.html'));
+    });
+
     app.post('/login', (req, res) => {
+        console.log(req.body);
+
         const body = req.body || {};
 
         const {sid} = req.cookies || {};
@@ -14,7 +22,6 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
             res.sendStatus(409);
             return;
         }
-
         const userType = (body).userType;
         if (userType === "teacher") {
             const {login, password} = body;
@@ -24,7 +31,7 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
                 const newSid = sidGenerator();
                 sessionStorage.add(newSid, {id: teacher.id, isTeacher: true});
                 res.cookie("sid", newSid);
-                res.sendStatus(200);
+                res.redirect(302, '/createMeeting');
                 return;
             }
         }
@@ -39,4 +46,9 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
 
         res.sendStatus(401)
     });
+
+    app.get('/createMeeting', (req, res) => {
+        // todo проверить куку учителя
+        res.sendFile(path.join(rootDir, '../views/createMeeting.html'));
+    })
 };
