@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="../static/index.css" rel="stylesheet" type="text/css">
+    <title>Вопрос</title>
+</head>
+<body>
+<main>
+    <div class="question-wrapper" data-question-id="12345">
+        <div class="question">Кто из Смешариков сочиняет стихи?</div>
+        <input class="js-answer" id="answer1" name="answers" type="radio">
+        <input class="js-answer" id="answer2" name="answers" type="radio">
+        <input class="js-answer" id="answer3" name="answers" type="radio">
+        <input class="js-answer" id="answer4" name="answers" type="radio">
+
+        <div class="answers">
+            <label class="answer-choice answer1" for="answer1">Нюша</label>
+            <label class="answer-choice answer2" for="answer2">Кар Карыч</label>
+            <label class="answer-choice answer3" for="answer3">Бараш</label>
+            <label class="answer-choice answer4" for="answer4">Копатыч</label>
+        </div>
+    </div>
+</main>
+</body>
+<script>
+    function init() {
+        const answers = document.querySelectorAll('.answer-choice');
+        const questionId = document.querySelector('.question-wrapper').attributes[1].value;
+        for (const answer of answers) {
+            const answerId = answer.classList[1];
+            answer.addEventListener('click', () => {
+                // todo переписать на fetch
+                console.log(`api/answer?questionId=${questionId}&answerId=${answerId[answerId.length - 1]}`);
+            })
+        }
+        setTimeout(checkForChanges, 5000)
+    }
+
+    async function checkForChanges() {
+        const newQuestion = await fetch('/api/getNextQuestion').then(res => {
+            if (res.statusCode === 403) {
+                return null;
+            }
+
+            if (res.statusCode === 404) {
+                window.location = '/end';
+                return null;
+            }
+
+            if (res.statusCode === 200) {
+                return res.json();
+            }
+            console.log(res.statusCode);
+            return null;
+
+        });
+        // 403 -- следующего вопроса нет
+        // 404 -- опрос закончен
+
+        if (!newQuestion) {
+            setTimeout(checkForChanges, 5000);
+            return;
+        }
+
+        const question = document.querySelector('.question');
+        question.textContent = newQuestion.question;
+
+        const answers = document.querySelector('.answers');
+        answers.innerHTML = '';
+        let newHtml = '';
+        for (let i = 0; i < newQuestion.answers.length; i++) {
+            const nextAnswer = newQuestion.answers[i];
+            newHtml += `<label class="answer-choice answer${i}" for="answer${i}">${nextAnswer}</label>`;
+        }
+        answers.innerHTML = newHtml;
+
+        document.querySelector('.question-wrapper').attributes[1] = newQuestion.id;
+        init();
+    }
+
+    init();
+</script>
+</html>

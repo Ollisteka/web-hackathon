@@ -46,3 +46,66 @@ button {
 .meeting-create {
     grid-area: subm;
 }
+
+.question-wrapper {
+    display: grid;
+    grid-template-areas: "question" "answers";
+    grid-row-gap: 20px;
+}
+
+.question {
+    grid-area: question;
+    font-weight: bold;
+    font-size: 34px;
+}
+
+.answers {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 28px;
+}
+
+.answer-choice {
+    color: white;
+    text-align: center;
+    flex: 0 46%;
+    padding: 50px 0;
+    cursor: pointer;
+    margin: 4px;
+}
+
+.question-wrapper input {
+    display: none;
+}
+
+.answer-choice:nth-child(1) {
+    background: sandybrown;
+}
+
+.answer-choice:nth-child(2) {
+    background: tomato;
+}
+
+.answer-choice:nth-child(3) {
+    background: crimson;
+}
+
+.answer-choice:nth-child(4) {
+    background: #6a4a3c;
+}
+
+input#answer1:checked ~ .answers .answer1 {
+    background: lightseagreen;
+}
+
+input#answer2:checked ~ .answers .answer2 {
+    background: lightseagreen;
+}
+
+input#answer3:checked ~ .answers .answer3 {
+    background: lightseagreen;
+}
+
+input#answer4:checked ~ .answers .answer4 {
+    background: lightseagreen;
+}
