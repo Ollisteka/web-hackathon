@@ -1,6 +1,7 @@
 const Student = require("./models/student");
 
-module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentIdGenerator, sidGenerator) => {
+module.exports = (app, storages, studentIdGenerator, sidGenerator) => {
+    const {surveyStateStorage, sessionStorage, teachersStorage, studentStorage} = storages;
     app.get('/', (req, res) => {
 
         res.sendStatus(200);
@@ -30,8 +31,14 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
         }
 
         if (userType === "student") {
-            const {name} = body;
+            const {name, survey} = body;
             const id = studentIdGenerator();
+            const accessedSurvey = surveyStateStorage.get(survey);
+            if (!accessedSurvey){
+                res.sendStatus(404);
+                return;
+            }
+            accessedSurvey.addStudent(id);
             const newSid = sidGenerator;
             studentStorage.add(new Student(id, name || id.toString()));
             sessionStorage.add(newSid, id);
@@ -42,4 +49,25 @@ module.exports = (app, sessionStorage, teachersStorage, studentStorage, studentI
 
         res.sendStatus(401)
     });
+    app.get('/survey/:id', (req, res) =>
+    {
+        const {id} = req.params;
+
+        const surveyState = surveyStateStorage.get(id);
+        if (!surveyState) {
+            res.sendStatus(404);
+            return;
+        }
+
+        res.redirect(`/survey/${id}/question/0`);
+    });
+
+    app.get('/survey/:id/question/:index', (req, res) => {
+        const {id, index} = req.params;
+        const surveyState = surveyStateStorage.get(id);
+        if (!surveyState) {
+            res.sendStatus(404);
+            return;
+        }
+    })
 };
