@@ -10,4 +10,4 @@
 
 Усложнение: минимальная версия не предполагает создания своих опросов, только использование заданных разработчиками. Усложнение — добавить и возможность создавать свои опросы тоже.
 
-Можешь отталкиваться от подобного сервиса kahoot
+Можешь отталкиваться от подобного сервиса kahoot (https://www.google.ru/search?q=kahoot+it+interface&newwindow=1&sxsrf=ACYBGNTvMz_q5WA-OBsXtngJ92pD9vPgUg:1576863796454&source=lnms&tbm=isch&sa=X&ved=2ahUKEwirlMmz48TmAhUwzqYKHdvMBcEQ_AUoAXoECA0QAw&biw=1400&bih=804)
