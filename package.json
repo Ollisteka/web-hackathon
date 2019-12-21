@@ -1,0 +1,22 @@
+{
+  "name": "web-hackathon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ollisteka/web-hackathon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ollisteka/web-hackathon/issues"
+  },
+  "homepage": "https://github.com/Ollisteka/web-hackathon#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
