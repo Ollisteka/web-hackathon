@@ -1,10 +1,16 @@
 const Student = require("./models/student");
+const rootDir = process.cwd();
+const path = require('path');
 
 module.exports = (app, storages, studentIdGenerator, sidGenerator) => {
     const {surveyStateStorage, sessionStorage, teachersStorage, studentStorage} = storages;
     app.get('/', (req, res) => {
 
         res.sendStatus(200);
+    });
+
+    app.get('/login', (req, res) => {
+        res.sendFile(path.join(rootDir, '../views/login.html'));
     });
 
     app.post('/login', (req, res) => {
@@ -25,7 +31,7 @@ module.exports = (app, storages, studentIdGenerator, sidGenerator) => {
                 const newSid = sidGenerator();
                 sessionStorage.add(newSid, {id: teacher.id, isTeacher: true});
                 res.cookie("sid", newSid);
-                res.sendStatus(200);
+                res.redirect(302, '/createMeeting');
                 return;
             }
         }
@@ -43,11 +49,25 @@ module.exports = (app, storages, studentIdGenerator, sidGenerator) => {
             studentStorage.add(new Student(id, name || id.toString()));
             sessionStorage.add(newSid, id);
             res.cookie("sid", newSid);
-            res.sendStatus(200);
+            res.redirect(302, '/question');
             return;
         }
 
         res.sendStatus(401)
+    });
+
+    app.get('/createMeeting', (req, res) => {
+        // todo проверить куку учителя
+        res.sendFile(path.join(rootDir, '../views/createMeeting.html'));
+    });
+
+    app.post('/createMeeting', (req, res) => {
+        // todo проверить куку учителя, save data
+        res.redirect(302, '/question');
+    });
+
+    app.get('/question', (req, res) => {
+        res.sendFile(path.join(rootDir, '../views/question.html'));
     });
     app.get('/survey/:id', (req, res) =>
     {
