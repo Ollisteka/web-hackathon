@@ -8,6 +8,55 @@ button {
     font-size: 18px;
 }
 
+.login-page {
+    display: flex;
+    width: 700px;
+    padding-top: 50px;
+    margin: auto;
+    justify-content: space-around;
+}
+
+.login-page form label {
+    /*display: block;*/
+    /*padding: 15px 0;*/
+}
+
+.login-page form button {
+    /*display: block;*/
+    /*padding: 15px 0;*/
+}
+
+#TeacherLoginButton,
+#StudentLoginButton {
+    height: 80px;
+    padding: 0 50px;
+    background: sandybrown;
+    color: black;
+    border: none;
+    border-radius: 5px;
+}
+
+#TeacherLoginButton:hover,
+#StudentLoginButton:hover {
+    background: tomato;
+}
+
+#TeacherLoginButton:active,
+#StudentLoginButton:active,
+#TeacherLoginButton:focus,
+#StudentLoginButton:focus {
+    background: lightseagreen;
+}
+
+
+#StudentLoginButton {
+
+}
+
+#TeacherLoginButton {
+
+}
+
 .hidden {
     display: none;
 }
